@@ -31,7 +31,7 @@ button:hover{background:var(--a);color:#2a1a10}
 .scroll{max-height:300px;overflow:auto}.scroll th{position:sticky;top:0;z-index:1;background:var(--pn);padding:6px 3px;box-shadow:0 1px 0 var(--ln)}
 .mode{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin:0 0 10px}.mode button{padding:4px 12px;font-size:14px;border-color:var(--ln)}.mode button.on{background:var(--c);border-color:var(--c);color:#2a1a10}
 .mode label{display:flex;align-items:center;gap:6px;color:var(--mu)}.mode .sz{width:110px}.sum{font-size:13px;color:var(--mu)}
-.side:not(.ratio) .rt{display:none}.side.ratio input[data-k=n]{display:none}small.rt{display:block;color:var(--mu);font-size:12px;font-weight:500;white-space:nowrap}.rt input{width:100%}
+.side:not(.ratio) .rt{display:none}.side.ratio .am{display:none}.side.ratio input[data-k=n]{display:none}small.rt{display:block;color:var(--mu);font-size:12px;font-weight:500;white-space:nowrap}.rt input{width:100%}
 .dots{display:flex;flex-wrap:wrap;gap:3px;margin-top:8px}.dots span{width:14px;height:14px;border-radius:3px}
 
 body{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cg fill='%23d9731a' fill-opacity='.07'%3E%3Cg transform='translate(38 44) rotate(-20)'%3E%3Cellipse cx='0' cy='6' rx='10' ry='8'/%3E%3Ccircle cx='-11' cy='-5' r='4.5'/%3E%3Ccircle cx='-4' cy='-12' r='4.5'/%3E%3Ccircle cx='4' cy='-12' r='4.5'/%3E%3Ccircle cx='11' cy='-5' r='4.5'/%3E%3C/g%3E%3Cg transform='translate(108 112) rotate(25)'%3E%3Cellipse cx='0' cy='6' rx='10' ry='8'/%3E%3Ccircle cx='-11' cy='-5' r='4.5'/%3E%3Ccircle cx='-4' cy='-12' r='4.5'/%3E%3Ccircle cx='4' cy='-12' r='4.5'/%3E%3Ccircle cx='11' cy='-5' r='4.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
@@ -41,18 +41,18 @@ button{border-radius:999px;transition:transform .15s}
 .bar{border-radius:12px}
 input,select{border-radius:10px}
 @media (prefers-reduced-motion:no-preference){button:hover{transform:rotate(-2deg) scale(1.05)}}
-</style></head><body><main>
+.run .opt{margin-left:auto;display:flex;gap:8px;align-items:center;color:var(--mu);font-size:14px;flex-wrap:wrap}#optside{width:auto;min-width:0;font-size:14px;font-weight:500;text-align:left;text-align-last:left}button:disabled{opacity:.5;cursor:wait}</style></head><body><main>
 <h1><span class="ct" aria-hidden="true">🐱</span>Labyrinth ratio CATculator</h1>
 <p class="sub">Set both squads, then let the cats fight. Only skill procs are left to chance.</p>
 <div class="sides" id="sides"></div>
-<div class="run"><b>🐾 Simulate</b><button data-n="1">1&times;</button><button data-n="10">10&times;</button><button data-n="25">25&times;</button><button data-n="50">50&times;</button><button data-n="250">250&times;</button><button data-n="1000">1000&times;</button></div>
+<div class="run"><b>🐾 Simulate</b><button data-n="1">1&times;</button><button data-n="10">10&times;</button><button data-n="25">25&times;</button><button data-n="50">50&times;</button><button data-n="250">250&times;</button><button data-n="1000">1000&times;</button><span class="opt">Best ratio for <select id="optside"><option value="0">Attacker</option><option value="1">Defender</option></select><button id="best" type="button">🐾 Find</button></span></div>
 <div id="out"></div>
 
 </main>
 <script>
 const LF=[[1,1.5,2.099,2.73,3.274,3.865,4.56,5.381,6.349,7.492,8.992],[1.04,1.56,2.183,2.841,3.405,4.02,4.742,5.595,6.603,7.794,9.353],[1.091,1.639,2.294,2.98,3.575,4.222,4.98,5.877,6.933,8.183,9.817],[1.147,1.718,2.409,3.131,3.754,4.433,5.226,6.171,7.282,8.591,10.31],[1.202,1.806,2.528,3.286,3.94,4.655,5.488,6.48,7.643,9.02,10.825],[1.266,1.897,2.655,3.452,4.139,4.885,5.762,6.802,8.028,9.472,11.365],[1.329,1.992,2.786,3.627,4.345,5.131,6.052,7.143,8.429,9.944,11.933],[1.397,2.091,2.925,3.81,4.563,5.389,6.353,7.5,8.849,10.44,12.528],[1.468,2.194,3.071,4,4.794,5.659,6.671,7.877,9.294,10.964,13.155],[1.504,2.25,3.147,4.099,4.913,5.802,6.837,8.075,9.528,11.238,13.484],[1.579,2.361,3.306,4.306,5.159,6.091,7.179,8.48,10.004,11.802,14.159]];
 const TY=['inf','lan','mar'],NM={inf:'Infantry',lan:'Lancers',mar:'Marksmen'};
-const DEF=[{inf:90000,lan:7500,mar:52500},{inf:50000,lan:50000,mar:50000}];
+const DEF=[{inf:82500,lan:22500,mar:45000},{inf:50000,lan:50000,mar:50000}];
 var SHU=0.01,SHIELD=36*SHU;
 // base offense : defense weights per type (infantry 1:3, lancers 3:1, marksmen 4:0.75)
 const WO={inf:1,lan:3,mar:4},WD={inf:3,lan:1,mar:.75};
@@ -63,12 +63,13 @@ const sidesEl=$('#sides');
 [['🐈 Attacker','--a'],['🐈‍⬛ Defender','--b']].forEach(([name,c],i)=>{
  const d=document.createElement('div');d.className='side';d.style.setProperty('--c',`var(${c})`);
  const tot=TY.reduce((a,t)=>a+DEF[i][t],0);
- let h=`<h2>${name}</h2><div class="mode"><button type="button" data-m="n" class="on">Amounts</button><button type="button" data-m="r">Squad ratio</button><label class="rt">Squad size <input class="sz" type="number" min="0" step="1" data-k="size" value="${tot}"></label><span class="sum rt"></span></div><div class="tw"><table><tr><th></th><th>Troops (amount or %)</th><th>Tier</th><th>FC</th><th>Attack %</th><th>Defense %</th><th>Lethality %</th><th>Health %</th></tr>`;
- TY.forEach(t=>{h+=`<tr data-s="${i}" data-t="${t}"><td class="n">${NM[t]}<small class="rt"></small></td><td class="cnt"><input type="number" min="0" step="1" data-k="n" value="${DEF[i][t]}"><span class="rt"><input type="number" min="0" step="any" data-k="pct" value="${+(100*DEF[i][t]/tot).toFixed(2)}"></span></td>
+ let h=`<h2>${name}</h2><div class="mode"><button type="button" data-m="n" class="on">Amounts</button><button type="button" data-m="r">Squad ratio</button><label class="rt">Squad size <input class="sz" type="number" min="0" step="1" data-k="size" value="${tot}"></label><span class="sum rt"></span></div><div class="tw"><table><tr><th></th><th><span class="am">Troop amount</span><span class="rt">Troop ratio (%)</span></th><th>Tier</th><th>FC</th><th>Attack %</th><th>Defense %</th><th>Lethality %</th><th>Health %</th></tr>`;
+ TY.forEach(t=>{h+=`<tr data-s="${i}" data-t="${t}"><td class="n">${NM[t]}<small class="rt"></small></td><td class="cnt"><input type="number" min="0" step="1" data-k="n" value="${DEF[i][t]}"><span class="rt"><input type="number" min="0" step="any" data-k="pct" value="${Math.round(100*DEF[i][t]/tot)}"></span></td>
  <td><select data-k="t">${[...Array(11)].map((_,j)=>`<option ${j==9?'selected':''}>${j+1}</option>`)}</select></td>
  <td><select data-k="fc">${[...Array(11)].map((_,j)=>`<option ${j==0?'selected':''}>${j}</option>`)}</select></td>
- ${['a','d','l','h'].map(k=>`<td class="p"><input type="number" step="any" data-k="${k}" value="0"></td>`).join('')}</tr>`});
+ ${['a','d','l','h'].map(k=>`<td class="p"><input type="number" step="any" data-k="${k}" value=""></td>`).join('')}</tr>`});
  d.innerHTML=h+'</table></div>';sidesEl.appendChild(d)});
+function ints(n){const s=n.reduce((a,b)=>a+b,0);if(!s)return[0,0,0];const raw=n.map(x=>100*x/s);if(raw.every(x=>Math.abs(x-100/3)<.6))return[33,33,33];const fl=raw.map(Math.floor);let rem=100-fl.reduce((a,b)=>a+b,0);raw.map((x,i)=>[x-fl[i],i]).sort((a,b)=>b[0]-a[0]).slice(0,rem).forEach(([_,i])=>fl[i]++);return fl}
 const rowOf=(d,t)=>d.querySelector(`tr[data-t="${t}"]`);
 function counts(d){const size=Math.max(0,+d.querySelector('[data-k=size]').value||0),p={};let s=0;
  TY.forEach(t=>{p[t]=Math.max(0,+rowOf(d,t).querySelector('[data-k=pct]').value||0);s+=p[t]});
@@ -79,7 +80,7 @@ function upd(d){if(!d.classList.contains('ratio'))return;const {c,s}=counts(d);
 sidesEl.addEventListener('click',e=>{const b=e.target.closest('.mode button');if(!b)return;const d=b.closest('.side'),r=b.dataset.m=='r';
  if(r==d.classList.contains('ratio'))return;
  if(r){const n={};let s=0;TY.forEach(t=>{n[t]=+rowOf(d,t).querySelector('[data-k=n]').value||0;s+=n[t]});
-  d.querySelector('[data-k=size]').value=s;TY.forEach(t=>rowOf(d,t).querySelector('[data-k=pct]').value=s?+(100*n[t]/s).toFixed(2):0)}
+  d.querySelector('[data-k=size]').value=s;{const q=ints(TY.map(t=>n[t]));TY.forEach((t,j)=>rowOf(d,t).querySelector('[data-k=pct]').value=q[j])}}
  else{const {c}=counts(d);TY.forEach(t=>rowOf(d,t).querySelector('[data-k=n]').value=c[t])}
  d.classList.toggle('ratio',r);d.querySelectorAll('.mode button').forEach(x=>x.classList.toggle('on',(x.dataset.m=='r')==r));upd(d)});
 sidesEl.addEventListener('input',e=>upd(e.target.closest('.side')));
@@ -135,4 +136,37 @@ function show(res,n){const w=[0,0,0];res.forEach(x=>w[x.w]++);const avg=(fn)=>re
  <div class="g3">${[0,1].map(s=>`<div class="card"><b style="color:var(--${s?'b':'a'})">${s?'Defender':'Attacker'}</b> <span class="sm">(averages per battle)</span><table class="num"><tr><th></th><th>Start</th><th>Left</th><th>Lost</th><th>Kills</th></tr>${rows[s]}</table>
  <table class="num" style="margin-top:10px"><tr><th>Skill activations</th><th>Per battle</th></tr>${sk(s)}</table></div>`).join('')}</div>
  <div class="card"><b>Round log</b> <span class="sm">(last battle, troops remaining after each round)</span><div class="scroll"><table class="num"><tr><th>Round</th><th>Atk Inf</th><th>Atk Lan</th><th>Atk Mar</th><th>Def Inf</th><th>Def Lan</th><th>Def Mar</th></tr>${lg}</table></div></div>`}
+let busy=false;const tick=()=>new Promise(r=>setTimeout(r,0));
+const sumN=S=>TY.reduce((a,t)=>a+S[t].n,0);
+function army(base,size,p){const n=p.map(x=>Math.round(size*x/100));n[n.indexOf(Math.max(...n))]+=size-n[0]-n[1]-n[2];const o={};TY.forEach((t,j)=>o[t]={...base[t],n:n[j]});return o}
+function evalP(S,side,size,p,N){const mine=army(S[side],size,p),A=side?S[0]:mine,B=side?mine:S[1],et=sumN(S[1-side]);let w=0,e=0,o=0,ar=0,dr=0;
+ for(let i=0;i<N;i++){const r=sim(A,B,false);if(r.w==side)w++;e+=TY.reduce((a,t)=>a+r.lost[1-side][t],0)/et;o+=TY.reduce((a,t)=>a+r.lost[side][t],0)/size;ar+=TY.reduce((a,t)=>a+r.left[0][t],0);dr+=TY.reduce((a,t)=>a+r.left[1][t],0)}
+ w/=N;e/=N;o/=N;return{p,n:TY.map(t=>mine[t].n),w,e,o,net:(dr-ar)/N,s:w+.1*(e-o)}}
+const rem=x=>{const v=Math.round(Math.abs(x));return v?'<b style="color:var(--'+(x<0?'a':'b')+')">'+f(v)+'</b>':'0'};
+function grid(step){const L=[];for(let i=0;i<=100;i+=step)for(let l=0;l<=100-i;l+=step)L.push([i,l,100-i-l]);return L}
+const NB=[-6,-4,-2,0,2,4,6];
+async function findBest(){
+ if(busy)return;const side=+$('#optside').value,S=read(),size=sumN(S[side]);
+ if(size<1||sumN(S[1-side])<1){$('#out').innerHTML='<p class="sm">Enter troops for both sides first.</p>';return}
+ busy=true;document.querySelectorAll('.run button').forEach(b=>b.disabled=true);
+ const prog=x=>{$('#out').innerHTML='<p class="sm">Searching ratios&hellip; '+Math.round(x)+'%</p>'};prog(0);await tick();
+ try{
+  const ev=async(list,N,a,b)=>{const out=[];let t0=performance.now();for(let k=0;k<list.length;k++){out.push(evalP(S,side,size,list[k],N));if(performance.now()-t0>40){prog(a+(b-a)*(k+1)/list.length);await tick();t0=performance.now()}}return out};
+  const by=(x,y)=>y.s-x.s;
+  const r1=(await ev(grid(5),12,0,25)).sort(by);
+  const seen=new Set(),L2=[];
+  r1.slice(0,3).forEach(c=>{for(const dx of NB)for(const dy of NB){const p=[c.p[0]+dx,c.p[1]+dy,c.p[2]-dx-dy];if(p.some(v=>v<0||v>100))continue;const k=p.join();if(!seen.has(k)){seen.add(k);L2.push(p)}}});
+  const r2=(await ev(L2,30,25,45)).sort(by);
+  const pool=new Map();[...r1.slice(0,8),...r2.slice(0,10)].forEach(c=>pool.set(c.p.join(),c.p));
+  const mid=(await ev([...pool.values()],300,45,60)).sort(by);
+  const fin=(await ev(mid.slice(0,12).map(c=>c.p),1000,60,97)).sort(by);
+  const cp=TY.map(t=>100*S[side][t].n/size),cur=(await ev([cp],1000,97,100))[0];
+  const rows=fin.slice(0,10).sort((x,y)=>side?y.net-x.net:x.net-y.net).map((c,i)=>'<tr><td>'+(i+1)+'</td><td>'+c.p.join(' / ')+'</td><td>'+c.n.map(f).join(' / ')+'</td><td>'+Math.round(100*c.w)+'% <span class="sm">&plusmn;'+(196*Math.sqrt(c.w*(1-c.w)/1000)).toFixed(1)+'</span></td><td>'+rem(c.net)+'</td><td><button type="button" class="use" data-side="'+side+'" data-size="'+size+'" data-p="'+c.p.join(',')+'">Use</button></td></tr>').join('');
+  $('#out').innerHTML='<div class="card"><b style="color:var(--'+(side?'b':'a')+')">Best ratio for the '+(side?'Defender':'Attacker')+'</b> <span class="sm">(squad of '+f(size)+'; infantry / lancers / marksmen)</span><div class="scroll"><table class="num"><tr><th>#</th><th>Ratio %</th><th>Troops</th><th>Win chance</th><th>Remaining troops</th><th></th></tr>'+rows+'</table></div><p class="sm">Current ratio '+cp.map(x=>Math.round(x)).join(' / ')+': win chance '+Math.round(100*cur.w)+'%, remaining troops '+rem(cur.net)+'. Remaining troops are the average troops left over, in orange for the attacker and blue for the defender. The 10 ratios with the best win chance are listed in order of remaining troops, best for the '+(side?'defender':'attacker')+' first, and were each re-tested with 1,000 fights along with your current ratio.</p></div>';
+ }finally{busy=false;document.querySelectorAll('.run button').forEach(b=>b.disabled=false)}
+}
+$('#best').addEventListener('click',findBest);
+$('#out').addEventListener('click',e=>{const b=e.target.closest('.use');if(!b)return;const d=sidesEl.children[+b.dataset.side];
+ if(!d.classList.contains('ratio'))d.querySelector('.mode button[data-m="r"]').click();
+ d.querySelector('[data-k=size]').value=b.dataset.size;b.dataset.p.split(',').forEach((v,j)=>{rowOf(d,TY[j]).querySelector('[data-k=pct]').value=v});upd(d);b.textContent='Applied';d.scrollIntoView({behavior:'smooth',block:'center'})});
 </script></body></html>
